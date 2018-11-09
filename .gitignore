@@ -1,3 +1,6 @@
 .idea
 .gradle
 out
+*.iml
+build
+linalyzer
