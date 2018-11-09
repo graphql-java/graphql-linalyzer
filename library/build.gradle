@@ -1,0 +1,161 @@
+import java.text.SimpleDateFormat
+
+def getDevelopmentVersion() {
+    def output = new StringBuilder()
+    def error = new StringBuilder()
+    def gitShortHash = "git -C ${projectDir} rev-parse --short HEAD".execute()
+    gitShortHash.waitForProcessOutput(output, error)
+    def gitHash = output.toString().trim()
+    if (gitHash.isEmpty()) {
+        println "git hash is empty: error: ${error.toString()}"
+//        throw new IllegalStateException("git hash could not be determined")
+        gitHash = "NON-GIT"
+    }
+    new SimpleDateFormat('yyyy-MM-dd\'T\'HH-mm-ss').format(new Date()) + "-" + gitHash
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+    }
+}
+
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+def releaseVersion = System.env.RELEASE_VERSION
+version = releaseVersion ? releaseVersion : getDevelopmentVersion()
+group = 'com.graphql-java'
+
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+def graphqlJavaVersion = "11.0"
+
+dependencies {
+    compile 'com.graphql-java:graphql-java:' + graphqlJavaVersion
+//    compile 'org.slf4j:slf4j-api:' + slf4jVersion
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+    testCompile 'org.codehaus.groovy:groovy-all:2.5.1'
+    testCompile 'cglib:cglib-nodep:3.1'
+    testCompile 'org.objenesis:objenesis:2.1'
+//    testCompile 'org.slf4j:slf4j-simple:' + slf4jVersion
+}
+
+apply plugin: 'groovy'
+
+
+task sourcesJar(type: Jar) {
+    dependsOn classes
+    classifier 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+javadoc {
+    options.encoding = 'UTF-8'
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+publishing {
+
+    publications {
+
+        graphqlJava(MavenPublication) {
+            version version
+            from components.java
+
+            artifact sourcesJar {
+                classifier "sources"
+            }
+            artifact javadocJar {
+                classifier "javadoc"
+            }
+            pom.withXml {
+                asNode().children().last() + {
+                    resolveStrategy = Closure.DELEGATE_FIRST
+                    description 'GraphQL Java Spring'
+                    url "https://github.com/graphql-java/graphql-linalyzer"
+                    scm {
+                        url "https://github.com/graphql-java/graphql-linalyzer"
+                        connection "https://github.com/graphql-java/graphql-linalzyer"
+                        developerConnection "https://github.com/graphql-java/graphql-linalyzer"
+                    }
+                    licenses {
+                        license {
+                            name 'MIT'
+                            url 'https://github.com/graphql-java/graphql-linalyzer/blob/master/LICENSE.md'
+                            distribution 'repo'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id 'andimarek'
+                            name 'Andreas Marek'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+bintray {
+    user = System.env.BINTRAY_USER
+    key = System.env.BINTRAY_API_KEY
+    publications = ['graphqlJava']
+    publish = true
+    pkg {
+        repo = 'graphql-java'
+        name = 'graphql-linalyzer'
+        desc = 'GraphQL schema linter and analyzer'
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/graphql-java/graphql-linalyzer'
+
+        version {
+            name = project.version
+            desc = project.description
+            released = new Date()
+            vcsTag = 'v' + project.version
+            gpg {
+                sign = true
+            }
+            mavenCentralSync {
+                sync = true
+                user = System.env.MAVEN_CENTRAL_USER
+                password = System.env.MAVEN_CENTRAL_PASSWORD
+                close = '1'
+            }
+        }
+    }
+}
+
+// all publish tasks depend on the build task
+tasks.withType(PublishToMavenRepository) {
+    dependsOn build
+}
+
+
+
