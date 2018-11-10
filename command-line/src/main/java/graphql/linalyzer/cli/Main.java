@@ -1,7 +1,9 @@
 package graphql.linalyzer.cli;
 
-import graphql.language.AstPrinter;
 import graphql.language.Document;
+import graphql.linalyzer.LinterRule;
+import graphql.linalyzer.LinterRuleResult;
+import graphql.linalyzer.SchemaDefinition;
 import graphql.parser.Parser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -9,24 +11,29 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.yaml.snakeyaml.Yaml;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 public class Main {
-    static final String defaultConfigFile = "lintalyzer-config.yml";
+    private static final String DEFAULT_CONFIG_FILE = "lintalyzer-config.yml";
 
-    private static Object parseYaml(String configFilePath) {
-        Yaml yaml = new Yaml();
-
+    private static String getFileContent(String filePath) {
         try {
-            return yaml.load(new FileReader(new File(configFilePath)));
-        } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException("Error reading config file: " + configFilePath, e);
+            return new String(Files.readAllBytes(Paths.get(filePath)));
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Error reading file: " + filePath, e);
         }
+    }
+
+    private static SchemaDefinition toSchemaDefinition(String schemaFilePath) {
+        Document document = new Parser().parseDocument(getFileContent(schemaFilePath));
+
+        return new SchemaDefinition(document);
     }
 
     public static void main(String[] args) throws ParseException {
@@ -43,17 +50,21 @@ public class Main {
 
         CommandLine commandLine = parser.parse(options, args);
 
-        String configFile = commandLine.hasOption("c") ? commandLine.getOptionValue("c") : defaultConfigFile;
-
-        System.out.println(parseYaml(configFile));
+        String configFile = commandLine.hasOption("c") ? commandLine.getOptionValue("c") : DEFAULT_CONFIG_FILE;
 
         List<String> schemaFiles = commandLine.getArgList();
 
-        System.out.println("Validating file: " + schemaFiles);
+        String configContent = getFileContent(configFile);
 
+        Configuration configuration = new ConfigParser().parse(configContent);
+        List<LinterRule> rules = new RuleCreator().createRules(configuration.getRules());
 
-        String schema = "type Query1{foo:String}";
-        Document document = new Parser().parseDocument(schema);
-        System.out.println(AstPrinter.printAst(document));
+        List<LinterRuleResult> ruleResults = schemaFiles.stream()
+                .map(Main::toSchemaDefinition)
+                .flatMap(schemaDefinition -> rules.stream()
+                        .flatMap(rule -> rule.check(schemaDefinition).stream()))
+                .collect(toList());
+
+        System.out.println("Result: " + ruleResults);
     }
 }

@@ -1,0 +1,3 @@
+rules:
+  - name: camelCase
+    severity: error
