@@ -17,6 +17,7 @@ repositories {
 dependencies {
     compile project(':library')
 //    compile 'org.slf4j:slf4j-api:' + slf4jVersion
+    compile 'info.picocli:picocli:3.7.0'
     testCompile group: 'junit', name: 'junit', version: '4.11'
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
     testCompile 'org.codehaus.groovy:groovy-all:2.5.1'
