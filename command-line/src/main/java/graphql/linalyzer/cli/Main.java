@@ -3,33 +3,44 @@ package graphql.linalyzer.cli;
 import graphql.language.AstPrinter;
 import graphql.language.Document;
 import graphql.parser.Parser;
-import picocli.CommandLine;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
-import java.io.File;
+import java.util.List;
 
-@CommandLine.Command(name = "lintalyzer", mixinStandardHelpOptions = true, version = "0.0.1")
-public class Main implements Runnable {
-    @CommandLine.Option(names = {"-v", "--verbose"}, description = "Verbose mode. Helpful for troubleshooting.")
-    private boolean verbose;
+public class Main {
+    static final String defaultConfigFile = "lintalyzer-config.yml";
 
-    @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = "Schema file(s) to process")
-    private File[] inputFiles;
+    public static void main(String[] args) throws ParseException {
+        CommandLineParser parser = new DefaultParser();
 
-    public void run() {
-        if (verbose) {
-            System.out.println(inputFiles.length + " files to process...");
-        }
+        Options options = new Options();
+        options.addOption(
+                Option.builder("c")
+                        .longOpt("config")
+                        .desc("Path to the config file")
+                        .hasArg()
+                        .build()
+        );
 
-        for (File f : inputFiles) {
-            System.out.println(f.getAbsolutePath());
-        }
+        CommandLine commandLine = parser.parse(options, args);
+
+        String configFile = commandLine.hasOption("c") ? commandLine.getOptionValue("c") : defaultConfigFile;
+
+        System.out.println("Using config file: " + configFile);
+
+        List<String> schemaFiles = commandLine.getArgList();
+
+        System.out.println("Validating file: " + schemaFiles);
+
 
         String schema = "type Query1{foo:String}";
         Document document = new Parser().parseDocument(schema);
         System.out.println(AstPrinter.printAst(document));
-    }
 
-    public static void main(String[] args) {
-        CommandLine.run(new Main(), args);
     }
 }
