@@ -20,7 +20,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 public class Main {
-    private static final String DEFAULT_CONFIG_FILE = "lintalyzer-config.yml";
+    private static final String DEFAULT_CONFIG_FILE = "linalyzer-config.yml";
 
     private static String getFileContent(String filePath) {
         try {
