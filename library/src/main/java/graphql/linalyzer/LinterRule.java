@@ -1,7 +1,9 @@
 package graphql.linalyzer;
 
+import java.util.List;
+
 public interface LinterRule {
 
-    LinterRuleResult check(SchemaDefinition schemaDefinition);
+    List<LinterRuleResult> check(SchemaDefinition schemaDefinition);
 
 }
