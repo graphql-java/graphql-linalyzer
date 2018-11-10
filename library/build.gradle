@@ -12,7 +12,6 @@ def getDevelopmentVersion() {
         gitHash = "NON-GIT"
     }
     new SimpleDateFormat('yyyy-MM-dd\'T\'HH-mm-ss').format(new Date()) + "-" + gitHash
-    ""
 }
 
 buildscript {
@@ -21,7 +20,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
-        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
     }
 }
 
@@ -29,7 +27,6 @@ apply plugin: 'com.jfrog.bintray'
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
-apply plugin: 'com.github.johnrengelman.shadow'
 
 
 
@@ -161,8 +158,3 @@ tasks.withType(PublishToMavenRepository) {
 }
 
 
-jar {
-    manifest {
-        attributes "Main-Class": "graphql.linalyzer.Main"
-    }
-}

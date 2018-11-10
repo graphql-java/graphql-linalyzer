@@ -1,9 +1,10 @@
 apply plugin: 'java'
 apply plugin: 'groovy'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-version = "1.0"
+version = ""
 group = 'com.graphql-java'
 
 
@@ -24,5 +25,17 @@ dependencies {
 //    testCompile 'org.slf4j:slf4j-simple:' + slf4jVersion
 }
 
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
+    }
+}
 
-
+jar {
+    manifest {
+        attributes "Main-Class": "graphql.linalyzer.cli.Main"
+    }
+}
