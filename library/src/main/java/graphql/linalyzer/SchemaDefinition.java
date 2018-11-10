@@ -1,23 +1,28 @@
 package graphql.linalyzer;
 
-import graphql.language.ObjectTypeDefinition;
-import graphql.schema.idl.TypeDefinitionRegistry;
+import graphql.language.Document;
+import graphql.language.NamedNode;
+import graphql.language.NodeTraverser;
 
-import java.util.Map;
+import java.util.List;
 
 public class SchemaDefinition {
 
-    public SchemaDefinition(TypeDefinitionRegistry typeDefinitionRegistry) {
-        this.typeDefinitionRegistry = typeDefinitionRegistry;
+//    private final TypeDefinitionRegistry typeDefinitionRegistry;
+
+    public SchemaDefinition(Document document) {
+//        SchemaParser schemaParser = new SchemaParser();
+//        this.typeDefinitionRegistry = schemaParser.buildRegistry(document);
+        this.document = document;
     }
 
-    private final TypeDefinitionRegistry typeDefinitionRegistry;
+    private Document document;
 
-    public Map<String, ObjectTypeDefinition> getObjectTypeDefinitions() {
-//       return typeDefinitionRegistry.types().entrySet().stream().filter(stringTypeDefinitionEntry -> {
-//           return stringTypeDefinitionEntry.getValue() instanceof ObjectTypeDefinition;
-//       }).collect(Collectors.toMap());
-        return null;
+    public List<NamedNode> getAllNodes(List<SchemaDefinitionElement> schemaDefinitionElements) {
+        NodeTraverser nodeTraverser = new NodeTraverser();
+        CollectElementsVisitor collectElementsVisitor = new CollectElementsVisitor(schemaDefinitionElements);
+        nodeTraverser.preOrder(collectElementsVisitor, document);
+        return collectElementsVisitor.getResult();
     }
 
 }
