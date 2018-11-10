@@ -1,6 +1,7 @@
 package graphql.linalyzer;
 
 import graphql.language.Document;
+import graphql.parser.Parser;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,6 +12,10 @@ public class Linalyzer {
 
     public Linalyzer(List<LinterRule> rules) {
         this.rules = rules;
+    }
+
+    public List<LinterRuleResult> lint(String document) {
+        return lint(new Parser().parseDocument(document));
     }
 
     public List<LinterRuleResult> lint(Document document) {

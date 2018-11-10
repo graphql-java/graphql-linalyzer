@@ -21,7 +21,10 @@ public class NamingRule implements LinterRule {
     public static final Pattern CAMEL_CASE = Pattern.compile("[a-z][A-Z0-9]*");
     public static final Pattern START_UPPER_CASE = Pattern.compile("[A-Z][_0-9A-Za-z]*");
 
-    public NamingRule(String ruleId, List<SchemaDefinitionElement> elementsToCheck, Pattern pattern, Severity severity) {
+    public NamingRule(String ruleId,
+                      List<SchemaDefinitionElement> elementsToCheck,
+                      Pattern pattern,
+                      Severity severity) {
         this.ruleId = ruleId;
         this.elementsToCheck = elementsToCheck;
         this.pattern = pattern;
