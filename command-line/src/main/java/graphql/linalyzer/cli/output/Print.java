@@ -1,5 +1,6 @@
 package graphql.linalyzer.cli.output;
 
+import graphql.linalyzer.Severity;
 import graphql.linalyzer.cli.result.FileResult;
 import graphql.linalyzer.cli.result.RuleResult;
 
@@ -35,14 +36,14 @@ public class Print {
         );
     }
 
-    private static String printSeverity(String severity) {
+    private static String printSeverity(Severity severity) {
         switch (severity) {
-            case "ERROR":
-                return red(severity.toLowerCase());
-            case "WARNING":
-                return yellow(severity.toLowerCase());
+            case ERROR:
+                return red(severity.toString().toLowerCase());
+            case WARNING:
+                return yellow(severity.toString().toLowerCase());
             default:
-                return severity.toLowerCase();
+                return severity.toString().toLowerCase();
         }
     }
 }

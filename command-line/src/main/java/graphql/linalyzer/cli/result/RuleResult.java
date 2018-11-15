@@ -1,10 +1,12 @@
 package graphql.linalyzer.cli.result;
 
+import graphql.linalyzer.Severity;
+
 import java.util.Objects;
 
 public class RuleResult {
     private final String ruleName;
-    private final String severity;
+    private final Severity severity;
     private final String message;
     private final Integer column;
     private final Integer line;
@@ -13,7 +15,7 @@ public class RuleResult {
 // Everything after this comment will be regenerated if you invoke Bob again.
 // If you don't know who Bob the Builder of Beans is, you can find him here: https://bitbucket.org/atlassian/bob
 
-    protected RuleResult(String ruleName, String severity, String message, Integer column, Integer line) {
+    protected RuleResult(String ruleName, Severity severity, String message, Integer column, Integer line) {
         this.ruleName = ruleName;
         this.severity = severity;
         this.message = message;
@@ -25,7 +27,7 @@ public class RuleResult {
         return ruleName;
     }
 
-    public String getSeverity() {
+    public Severity getSeverity() {
         return severity;
     }
 
@@ -43,10 +45,6 @@ public class RuleResult {
 
     public static RuleResult.Builder builder() {
         return new RuleResult.Builder();
-    }
-
-    public static RuleResult.Builder builder(RuleResult data) {
-        return new RuleResult.Builder(data);
     }
 
     @Override
@@ -87,21 +85,12 @@ public class RuleResult {
 
 
         private String ruleName;
-        private String severity;
+        private Severity severity;
         private String message;
         private Integer column;
         private Integer line;
 
         private Builder() {
-        }
-
-        private Builder(RuleResult initialData) {
-
-            this.ruleName = initialData.getRuleName();
-            this.severity = initialData.getSeverity();
-            this.message = initialData.getMessage();
-            this.column = initialData.getColumn();
-            this.line = initialData.getLine();
         }
 
 
@@ -111,7 +100,7 @@ public class RuleResult {
         }
 
 
-        public Builder setSeverity(String severity) {
+        public Builder setSeverity(Severity severity) {
             this.severity = severity;
             return this;
         }

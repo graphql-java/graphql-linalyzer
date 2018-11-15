@@ -1,6 +1,5 @@
 package graphql.linalyzer.cli;
 
-import graphql.linalyzer.cli.config.Configuration;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;

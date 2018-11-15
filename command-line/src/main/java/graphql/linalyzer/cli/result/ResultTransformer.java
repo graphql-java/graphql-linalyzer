@@ -11,7 +11,7 @@ public final class ResultTransformer {
     ) {
         return RuleResult.builder()
                 .setRuleName(ruleName)
-                .setSeverity(linterRuleResult.getSeverity().toString())
+                .setSeverity(linterRuleResult.getSeverity())
                 .setMessage(linterRuleResult.getMessage())
                 .setColumn(linterRuleResult.getSourceLocation().getColumn())
                 .setLine(linterRuleResult.getSourceLocation().getLine())
