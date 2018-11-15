@@ -2,8 +2,13 @@ package graphql.linalyzer.cli;
 
 import graphql.language.Document;
 import graphql.linalyzer.LinterRule;
-import graphql.linalyzer.LinterRuleResult;
 import graphql.linalyzer.SchemaDefinition;
+import graphql.linalyzer.cli.config.ConfigParser;
+import graphql.linalyzer.cli.config.ConfigTransformer;
+import graphql.linalyzer.cli.config.Configuration;
+import graphql.linalyzer.cli.output.Print;
+import graphql.linalyzer.cli.result.FileResult;
+import graphql.linalyzer.cli.result.RuleResult;
 import graphql.parser.Parser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -16,7 +21,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
+import static graphql.linalyzer.cli.result.ResultTransformer.transformLinterRuleResult;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 public class Main {
@@ -34,6 +42,23 @@ public class Main {
         Document document = new Parser().parseDocument(getFileContent(schemaFilePath));
 
         return new SchemaDefinition(document);
+    }
+
+    private static FileResult analyzeSchemaFile(String filePath, Map<String, LinterRule> rules) {
+        final SchemaDefinition schemaDefinition = toSchemaDefinition(filePath);
+
+
+        final List<RuleResult> ruleResults = rules.entrySet().stream()
+                .flatMap(entry -> {
+                    final String ruleName = entry.getKey();
+                    final LinterRule linterRule = entry.getValue();
+
+                    return linterRule.check(schemaDefinition).stream()
+                            .map(linterRuleResult -> transformLinterRuleResult(ruleName, linterRuleResult));
+                })
+                .collect(toList());
+
+        return new FileResult(filePath, ruleResults);
     }
 
     public static void main(String[] args) throws ParseException {
@@ -56,15 +81,15 @@ public class Main {
 
         String configContent = getFileContent(configFile);
 
-        Configuration configuration = new ConfigParser().parse(configContent);
-        List<LinterRule> rules = new RuleCreator().createRules(configuration.getRules());
+        Configuration configuration = ConfigParser.parse(configContent);
 
-        List<LinterRuleResult> ruleResults = schemaFiles.stream()
-                .map(Main::toSchemaDefinition)
-                .flatMap(schemaDefinition -> rules.stream()
-                        .flatMap(rule -> rule.check(schemaDefinition).stream()))
-                .collect(toList());
+        Map<String, LinterRule> rules = ConfigTransformer.transformRuleConfigurations(configuration.getRuleConfigurations());
 
-        System.out.println("Result: " + ruleResults);
+        final String results = schemaFiles.stream()
+                .map(filePath -> analyzeSchemaFile(filePath, rules))
+                .map(Print::printFileResult)
+                .collect(joining("\n"));
+
+        System.out.println(results);
     }
 }
