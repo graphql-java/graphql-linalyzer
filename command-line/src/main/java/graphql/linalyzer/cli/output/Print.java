@@ -4,6 +4,8 @@ import graphql.linalyzer.Severity;
 import graphql.linalyzer.cli.result.FileResult;
 import graphql.linalyzer.cli.result.RuleResult;
 
+import java.util.List;
+
 import static graphql.linalyzer.cli.output.Styled.bold;
 import static graphql.linalyzer.cli.output.Styled.red;
 import static graphql.linalyzer.cli.output.Styled.underlined;
@@ -12,7 +14,11 @@ import static graphql.linalyzer.cli.output.Styled.yellow;
 import static java.util.stream.Collectors.joining;
 
 public class Print {
-    public static String printFileResult(FileResult fileResult) {
+    public static String printExecutionResult(List<FileResult> filesResults) {
+        return filesResults.stream().map(Print::printFileResult).collect(joining("\n\n"));
+    }
+
+    private static String printFileResult(FileResult fileResult) {
         final String filePath = fileResult.getFilePath();
 
         final String printedRuleResults = fileResult.getRuleResults().stream()

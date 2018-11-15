@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import static graphql.linalyzer.cli.result.ResultTransformer.transformLinterRuleResult;
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 public class Execution {
@@ -27,10 +26,11 @@ public class Execution {
 
         Map<String, LinterRule> rules = ConfigTransformer.transformRuleConfigurations(configuration.getRuleConfigurations());
 
-        return configuration.getSchemaFilePaths().stream()
+        final List<FileResult> fileResults = configuration.getSchemaFilePaths().stream()
                 .map(filePath -> analyzeSchemaFile(filePath, rules))
-                .map(Print::printFileResult)
-                .collect(joining("\n\n"));
+                .collect(toList());
+
+        return Print.printExecutionResult(fileResults);
     }
 
     private FileResult analyzeSchemaFile(String filePath, Map<String, LinterRule> rules) {
