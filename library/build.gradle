@@ -38,11 +38,12 @@ group = 'com.graphql-java'
 
 
 repositories {
+    maven { url  "http://dl.bintray.com/andimarek/graphql-java" }
     mavenCentral()
     mavenLocal()
 }
 
-def graphqlJavaVersion = "11.0"
+def graphqlJavaVersion = "2018-11-15T21-34-14-7110576-ignored-chars"
 
 dependencies {
     compile 'com.graphql-java:graphql-java:' + graphqlJavaVersion

@@ -34,7 +34,8 @@ public class NamingRule implements LinterRule {
     @Override
     public List<LinterRuleResult> check(SchemaDefinition schemaDefinition) {
         List<NamedNode> allNodes = schemaDefinition.getAllNodes(elementsToCheck);
-        return allNodes.stream()
+        return allNodes
+                .stream()
                 .filter(namedNode -> (!pattern.matcher(namedNode.getName()).matches()))
                 .map(this::createRuleResult)
                 .collect(Collectors.toList());

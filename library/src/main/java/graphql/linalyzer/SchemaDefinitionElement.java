@@ -8,5 +8,6 @@ public enum SchemaDefinitionElement {
     INPUT,
     CUSTOM_SCALAR,
     DIRECTIVES,
-    FIELD
+    FIELD,
+    TYPE
 }
