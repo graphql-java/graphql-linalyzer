@@ -30,7 +30,7 @@ public class Execution {
         return configuration.getSchemaFilePaths().stream()
                 .map(filePath -> analyzeSchemaFile(filePath, rules))
                 .map(Print::printFileResult)
-                .collect(joining("\n"));
+                .collect(joining("\n\n"));
     }
 
     private FileResult analyzeSchemaFile(String filePath, Map<String, LinterRule> rules) {
