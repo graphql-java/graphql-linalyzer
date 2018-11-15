@@ -19,7 +19,12 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 public class Execution {
-    public String execute(Configuration configuration) {
+    public String execute(String configFilePath, List<String> schemaFilePaths) {
+        final Configuration configuration = Configuration.builder()
+                .setSchemaFilePaths(schemaFilePaths)
+                .setConfigFilePath(configFilePath)
+                .build();
+
         Map<String, LinterRule> rules = ConfigTransformer.transformRuleConfigurations(configuration.getRuleConfigurations());
 
         return configuration.getSchemaFilePaths().stream()

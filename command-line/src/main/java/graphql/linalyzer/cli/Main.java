@@ -41,12 +41,7 @@ public class Main {
 
         final List<String> schemaFilePaths = commandLine.getArgList();
 
-        final Configuration configuration = Configuration.builder()
-                .setSchemaFilePaths(schemaFilePaths)
-                .setConfigFilePath(configFilePath)
-                .build();
-
-        return execution.execute(configuration);
+        return execution.execute(configFilePath, schemaFilePaths);
     }
 
 }
