@@ -7,16 +7,16 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 
-public final class ConfigParser {
+final class ConfigParser {
     private ConfigParser() {
     }
 
-    public static Configuration parse(String configContent) {
+    static List<RuleConfiguration> parseRules(String configContent) {
         Yaml yaml = new Yaml();
 
         Map<String, List<Map<String, String>>> configurationMap = yaml.load(configContent);
 
-        List<RuleConfiguration> ruleConfigurations = configurationMap.get("rules").stream()
+        return configurationMap.get("rules").stream()
                 .map(r -> {
                     RuleConfiguration ruleConfiguration = new RuleConfiguration();
                     ruleConfiguration.setName(r.get("name"));
@@ -24,11 +24,5 @@ public final class ConfigParser {
 
                     return ruleConfiguration;
                 }).collect(toList());
-
-        Configuration configuration = new Configuration();
-
-        configuration.setRuleConfigurations(ruleConfigurations);
-
-        return configuration;
     }
 }
