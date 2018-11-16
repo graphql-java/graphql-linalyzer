@@ -46,6 +46,7 @@ public class Print {
                                 entry.getValue(),
                                 (entry.getKey().toString().toLowerCase() + (entry.getValue() > 1 ? "s" : ""))
                         ))
+                .sorted()
                 .collect(joining(", "));
 
         final String problemOrProblems = "problem" + (totalProblems > 1 ? "s" : "");
