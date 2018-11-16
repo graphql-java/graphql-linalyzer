@@ -2,14 +2,13 @@ package graphql.linalyzer.cli.config;
 
 import graphql.linalyzer.LinterRule;
 import graphql.linalyzer.SchemaDefinitionElement;
-import graphql.linalyzer.Severity;
 import graphql.linalyzer.rules.NamingRule;
 
 import java.util.AbstractMap;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toMap;
 
 public final class ConfigTransformer {
@@ -26,8 +25,8 @@ public final class ConfigTransformer {
                     if (ruleName.equals("camelCase")) {
                         linterRule = new NamingRule(
                                 "ruleId",
-                                Arrays.asList(SchemaDefinitionElement.FIELD),
-                                NamingRule.CAMEL_CASE, Severity.valueOf(ruleConfiguration.getSeverity().toUpperCase())
+                                singletonList(SchemaDefinitionElement.FIELD),
+                                NamingRule.CAMEL_CASE, ruleConfiguration.getSeverity()
                         );
                     }
 
