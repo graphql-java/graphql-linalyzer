@@ -9,5 +9,5 @@ public enum SchemaDefinitionElement {
     CUSTOM_SCALAR,
     DIRECTIVES,
     FIELD,
-    TYPE
+    TYPE_NAME
 }

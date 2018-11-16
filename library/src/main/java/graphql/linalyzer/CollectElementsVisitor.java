@@ -8,6 +8,7 @@ import graphql.language.NamedNode;
 import graphql.language.Node;
 import graphql.language.NodeVisitorStub;
 import graphql.language.ObjectTypeDefinition;
+import graphql.language.TypeName;
 import graphql.language.UnionTypeDefinition;
 import graphql.util.TraversalControl;
 import graphql.util.TraverserContext;
@@ -74,5 +75,13 @@ public class CollectElementsVisitor extends NodeVisitorStub {
             result.add(node);
         }
         return super.visitUnionTypeDefinition(node, context);
+    }
+
+    @Override
+    public TraversalControl visitTypeName(TypeName node, TraverserContext<Node> context) {
+        if (schemaDefinitionElements.contains(SchemaDefinitionElement.TYPE_NAME)) {
+            result.add(node);
+        }
+        return super.visitTypeName(node, context);
     }
 }
