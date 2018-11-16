@@ -22,3 +22,4 @@ RUN /build-cli.sh
 FROM alpine:3.8
 COPY --from=builder /linalyzer /linalyzer
 ENTRYPOINT ["/linalyzer"]
+
