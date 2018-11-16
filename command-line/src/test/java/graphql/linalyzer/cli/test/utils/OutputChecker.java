@@ -1,15 +1,20 @@
 package graphql.linalyzer.cli.test.utils;
 
 import graphql.linalyzer.cli.output.Styled;
+import org.hamcrest.Matchers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static graphql.linalyzer.cli.output.Styled.bold;
+import static graphql.linalyzer.cli.output.Styled.white;
+import static java.util.regex.Pattern.quote;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -18,11 +23,11 @@ import static org.junit.Assert.fail;
 public class OutputChecker {
     private final List<Line> expectedOutputLines;
 
-    private static final Map<String, String> SEVERITY_STYLE = new HashMap<>();
+    private static final Map<String, Function<String, String>> STYLE_SEVERITY = new HashMap<>();
 
     static {
-        SEVERITY_STYLE.put("warning", Styled.YELLOW);
-        SEVERITY_STYLE.put("error", Styled.RED);
+        STYLE_SEVERITY.put("warning", Styled::yellow);
+        STYLE_SEVERITY.put("error", Styled::red);
     }
 
     public OutputChecker() {
@@ -36,15 +41,14 @@ public class OutputChecker {
     }
 
     private String ruleLineWithStyle(String location, String severity, String message, String ruleName) {
-        final String severityStyle = SEVERITY_STYLE.get(severity);
+        final String severityStyled = STYLE_SEVERITY.get(severity).apply(severity);
 
         return String.format(
-                "\t\u001B[37m%s\u001B[0m\t%s%s\u001B[0m\u001B[1m%s\u001B[0m\u001B[37m%s\u001B[0m",
-                location,
-                severityStyle,
-                severity,
-                message,
-                ruleName
+                "\t%s\t%s *%s *%s",
+                quote(white(location)),
+                quote(severityStyled),
+                quote(bold(message)),
+                quote(white(ruleName))
         );
     }
 
@@ -55,11 +59,11 @@ public class OutputChecker {
     private String summaryLineWithStyle(int errors, int warnings, int problems) {
         final List<String> problemDetails = new ArrayList<>();
 
-        if(errors > 0) {
+        if (errors > 0) {
             problemDetails.add(String.format("%s error" + (errors > 1 ? "s" : ""), errors));
         }
 
-        if(warnings > 0) {
+        if (warnings > 0) {
             problemDetails.add(String.format("%s warning" + (warnings > 1 ? "s" : ""), warnings));
         }
 
@@ -104,10 +108,7 @@ public class OutputChecker {
                                 ruleLine.ruleName
                         );
 
-                final String expectedNoWhitespaces = expected.replaceAll(" ", "");
-                final String actualOutputLineNoWhitespaces = actualOutputLine.replaceAll(" ", "");
-
-                assertThat(actualOutputLineNoWhitespaces, equalTo(expectedNoWhitespaces));
+                assertThat(actualOutputLine, Matchers.matchesPattern(expected));
             } else if (expectedOutputLine instanceof SummaryLine) {
                 final SummaryLine summaryLine = (SummaryLine) expectedOutputLine;
 

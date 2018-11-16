@@ -1,10 +1,12 @@
 package graphql.linalyzer.cli.config;
 
+import graphql.linalyzer.Severity;
+
 import java.util.List;
 
 public class RuleConfiguration {
     private String name;
-    private String severity;
+    private Severity severity;
     private List<String> arguments;
 
     public String getName() {
@@ -15,11 +17,11 @@ public class RuleConfiguration {
         this.name = name;
     }
 
-    public String getSeverity() {
+    public Severity getSeverity() {
         return severity;
     }
 
-    public void setSeverity(String severity) {
+    public void setSeverity(Severity severity) {
         this.severity = severity;
     }
 

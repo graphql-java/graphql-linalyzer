@@ -1,5 +1,6 @@
 package graphql.linalyzer.cli.config;
 
+import graphql.linalyzer.Severity;
 import org.yaml.snakeyaml.Yaml;
 
 import java.util.List;
@@ -20,7 +21,7 @@ final class ConfigParser {
                 .map(r -> {
                     RuleConfiguration ruleConfiguration = new RuleConfiguration();
                     ruleConfiguration.setName(r.get("name"));
-                    ruleConfiguration.setSeverity(r.get("severity"));
+                    ruleConfiguration.setSeverity(Severity.valueOf(r.get("severity").toUpperCase()));
 
                     return ruleConfiguration;
                 }).collect(toList());

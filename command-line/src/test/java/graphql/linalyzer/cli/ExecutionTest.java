@@ -1,6 +1,7 @@
 package graphql.linalyzer.cli;
 
 import graphql.linalyzer.cli.test.utils.OutputChecker;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static graphql.linalyzer.cli.test.utils.OutputChecker.fileLine;
@@ -59,6 +60,39 @@ public class ExecutionTest {
                         fileLine(schemaFilePath),
                         ruleLine("2:3", "error", "Not allowed name Name", "camelCase"),
                         summaryLine(1, 0)
+                )
+                .check(output);
+    }
+
+    @Test
+    public void testNoTabsErrorAndCamelCaseWarning() {
+        final String config = "" +
+                "rules:\n" +
+                "  - name: camelCase\n" +
+                "    severity: warning\n" +
+                "  - name: noTabs\n" +
+                "    severity: error\n";
+
+        final String schema = "" +
+                "type Query {\n" +
+                "  Name: String\n" +
+                "\tId: String\n" +
+                "}";
+
+        final String configFilePath = createTempFile(config);
+        final String schemaFilePath = createTempFile(schema);
+
+        final String output = new Execution().execute(configFilePath, singletonList(schemaFilePath));
+
+        System.out.println(output);
+
+        new OutputChecker()
+                .expect(
+                        fileLine(schemaFilePath),
+                        ruleLine("2:3", "warning", "Not allowed name Name", "camelCase"),
+                        ruleLine("3:1", "error", "No tab allowed", "noTabs"),
+                        ruleLine("3:2", "warning", "Not allowed name Id", "camelCase"),
+                        summaryLine(1, 2)
                 )
                 .check(output);
     }

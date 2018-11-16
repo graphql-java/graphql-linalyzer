@@ -4,6 +4,7 @@ import graphql.linalyzer.Severity;
 import graphql.linalyzer.cli.result.FileResult;
 import graphql.linalyzer.cli.result.RuleResult;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -13,12 +14,14 @@ import static graphql.linalyzer.cli.output.Styled.red;
 import static graphql.linalyzer.cli.output.Styled.underlined;
 import static graphql.linalyzer.cli.output.Styled.white;
 import static graphql.linalyzer.cli.output.Styled.yellow;
+import static java.util.Comparator.comparingInt;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.joining;
 
 public class Print {
     public static String printExecutionResult(List<FileResult> filesResults) {
-        final String printedFileResults = filesResults.stream().map(Print::printFileResult).collect(joining("\n\n"));
+        final String printedFileResults = filesResults.stream()
+                .map(Print::printFileResult).collect(joining("\n\n"));
 
         final Map<Severity, Long> problemCountMap = filesResults.stream()
                 .flatMap(fileResult -> fileResult.getRuleResults().stream())
@@ -43,6 +46,7 @@ public class Print {
                                 entry.getValue(),
                                 (entry.getKey().toString().toLowerCase() + (entry.getValue() > 1 ? "s" : ""))
                         ))
+                .sorted()
                 .collect(joining(", "));
 
         final String problemOrProblems = "problem" + (totalProblems > 1 ? "s" : "");
@@ -59,6 +63,7 @@ public class Print {
         final String filePath = fileResult.getFilePath();
 
         final String printedRuleResults = fileResult.getRuleResults().stream()
+                .sorted(comparingInt(RuleResult::getLine))
                 .map(Print::printRuleResult)
                 .collect(joining("\n"));
 
