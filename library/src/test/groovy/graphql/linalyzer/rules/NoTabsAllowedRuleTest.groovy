@@ -12,11 +12,10 @@ class NoTabsAllowedRuleTest extends Specification {
 
     def "no tabs allowed"() {
         given:
-        def sdl = """
-            type Query {
-            \tfoo:Bar
-            }
-        """
+        def sdl = "\ttype Query {\n" +
+                "  Name: String\t\n" +
+                "\tId: String\n" +
+                "}"
         def document = new Parser().parseDocument(sdl)
         SchemaDefinition schemaDefinition = new SchemaDefinition(sdl, document)
         NoTabsAllowedRule rule = new NoTabsAllowedRule("ruleId", Severity.ERROR)
@@ -24,8 +23,10 @@ class NoTabsAllowedRuleTest extends Specification {
         def result = rule.check(schemaDefinition)
 
         then:
-        result.size() == 1
-        result[0] == new LinterRuleResult(Severity.ERROR, "ruleId", new SourceLocation(3, 14), "No tab allowed")
+        result.size() == 3
+        result[0] == new LinterRuleResult(Severity.ERROR, "ruleId", new SourceLocation(1, 1), "No tab allowed")
+        result[1] == new LinterRuleResult(Severity.ERROR, "ruleId", new SourceLocation(2, 15), "No tab allowed")
+        result[2] == new LinterRuleResult(Severity.ERROR, "ruleId", new SourceLocation(3, 1), "No tab allowed")
 
     }
 

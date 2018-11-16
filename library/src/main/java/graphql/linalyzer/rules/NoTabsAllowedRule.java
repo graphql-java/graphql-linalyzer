@@ -25,8 +25,8 @@ public class NoTabsAllowedRule implements LinterRule {
 
     @Override
     public List<LinterRuleResult> check(SchemaDefinition schemaDefinition) {
-        Map<IgnoredChar, Node> allNodes = schemaDefinition.getAllIgnoredChars();
-        return allNodes
+        Map<IgnoredChar, Node> allChars = schemaDefinition.getAllIgnoredChars();
+        return allChars
                 .entrySet()
                 .stream()
                 .filter(this::isTabChar)
@@ -39,7 +39,7 @@ public class NoTabsAllowedRule implements LinterRule {
     }
 
     private LinterRuleResult createRuleResult(IgnoredChar ignoredChar, Node node) {
-        return new LinterRuleResult(severity, ruleId, node.getSourceLocation(), "No" +
+        return new LinterRuleResult(severity, ruleId, ignoredChar.getSourceLocation(), "No" +
                 " tab allowed");
     }
 }
