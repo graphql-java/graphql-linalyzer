@@ -1,7 +1,5 @@
 package graphql.linalyzer.cli.test.utils.yaml;
 
-import graphql.linalyzer.cli.test.utils.yaml.TestRuleOutput;
-
 import java.util.List;
 
 public class TestSchema {

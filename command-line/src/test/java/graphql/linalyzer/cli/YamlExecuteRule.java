@@ -63,6 +63,7 @@ public class YamlExecuteRule implements MethodRule {
         final String output = new Execution().execute(configFilePath, new ArrayList<>(schemasWithPaths.keySet()));
 
         final List<Line> lines = schemasWithPaths.entrySet().stream()
+                .filter(entry -> entry.getValue().getOutputs() != null)
                 .reduce(new ArrayList<>(), (partialLines, entry) -> {
                     final String schemaPath = entry.getKey();
                     final TestSchema testSchema = entry.getValue();
@@ -88,6 +89,7 @@ public class YamlExecuteRule implements MethodRule {
 
     private Line getSummaryLine(List<TestSchema> testSchemas) {
         final Map<String, Long> severityCount = testSchemas.stream()
+                .filter(testSchema -> testSchema.getOutputs() != null)
                 .flatMap(testSchema -> testSchema.getOutputs().stream())
                 .collect(groupingBy(TestRuleOutput::getSeverity, Collectors.counting()));
 

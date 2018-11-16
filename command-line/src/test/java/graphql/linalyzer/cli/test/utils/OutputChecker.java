@@ -88,10 +88,13 @@ public class OutputChecker {
 
         if (actualOutputLines.size() != expectedOutputLines.size()) {
             fail(String.format(
-                    "Expected output lines should have the same number of lines than the actual output. " +
-                            "Expected is %s, actual is %s",
+                    "Expected output non-empty lines should have the same number of lines than the actual output. " +
+                            "Expected is %s, actual is %s.\n" +
+                            "Actual output: \n%s\n",
                     expectedOutputLines.size(),
-                    actualOutputLines.size()));
+                    actualOutputLines.size(),
+                    actualOutput
+            ));
         }
 
         for (int i = 0; i < actualOutputLines.size(); i++) {
@@ -172,7 +175,7 @@ public class OutputChecker {
         final int warnings;
         final int errors;
 
-        public SummaryLine(int errors, int warnings) {
+        SummaryLine(int errors, int warnings) {
             this.problems = warnings + errors;
             this.warnings = warnings;
             this.errors = errors;

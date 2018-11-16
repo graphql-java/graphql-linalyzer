@@ -24,3 +24,8 @@ schemas:
         location: 3:3
         message: Not allowed name ID
         ruleName: camelCase
+  -
+    content: |
+      type Query {
+        name: String
+      }
