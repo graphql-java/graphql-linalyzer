@@ -1,8 +1,8 @@
-package graphql.linalyzer.cli;
+package graphql.linalyzer.cli.config;
 
 import java.util.List;
 
-public class Rule {
+public class RuleConfiguration {
     private String name;
     private String severity;
     private List<String> arguments;
@@ -33,7 +33,7 @@ public class Rule {
 
     @Override
     public String toString() {
-        return "Rule{" +
+        return "RuleConfiguration{" +
                 "name='" + name + '\'' +
                 ", severity='" + severity + '\'' +
                 ", arguments=" + arguments +

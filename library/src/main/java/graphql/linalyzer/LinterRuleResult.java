@@ -47,4 +47,20 @@ public class LinterRuleResult {
                 ", message='" + message + '\'' +
                 '}';
     }
+
+    public Severity getSeverity() {
+        return severity;
+    }
+
+    public String getRuleId() {
+        return ruleId;
+    }
+
+    public SourceLocation getSourceLocation() {
+        return sourceLocation;
+    }
+
+    public String getMessage() {
+        return message;
+    }
 }

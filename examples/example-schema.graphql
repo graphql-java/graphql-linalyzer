@@ -1,3 +1,5 @@
 type Query {
-    Field: String
+    Name: String
+    Id: String
+    Age: String
 }
