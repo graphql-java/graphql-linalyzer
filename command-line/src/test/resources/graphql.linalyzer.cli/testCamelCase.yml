@@ -1,0 +1,13 @@
+- config:
+  rules:
+    - name: camelCase
+      severity: warning
+    - name: noTabs
+      severity: error
+- schemas:
+  -
+    type Query {
+      Name: String
+      Id: String
+    \tAge: String
+    }

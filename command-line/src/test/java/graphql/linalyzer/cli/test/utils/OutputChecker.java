@@ -40,6 +40,12 @@ public class OutputChecker {
         return this;
     }
 
+    public OutputChecker expect(List<Line> lines) {
+        expectedOutputLines.addAll(lines);
+
+        return this;
+    }
+
     private String ruleLineWithStyle(String location, String severity, String message, String ruleName) {
         final String severityStyled = STYLE_SEVERITY.get(severity).apply(severity);
 
@@ -147,7 +153,7 @@ public class OutputChecker {
         }
     }
 
-    private static class RuleLine implements Line {
+    public static class RuleLine implements Line {
         final String location;
         final String severity;
         final String message;

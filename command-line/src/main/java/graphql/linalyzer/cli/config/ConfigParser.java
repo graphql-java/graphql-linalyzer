@@ -8,11 +8,11 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 
-final class ConfigParser {
+public final class ConfigParser {
     private ConfigParser() {
     }
 
-    static List<RuleConfiguration> parseRules(String configContent) {
+    public static List<RuleConfiguration> parseRules(String configContent) {
         Yaml yaml = new Yaml();
 
         Map<String, List<Map<String, String>>> configurationMap = yaml.load(configContent);
