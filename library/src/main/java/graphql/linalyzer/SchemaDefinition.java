@@ -11,15 +11,14 @@ import java.util.Map;
 
 public class SchemaDefinition {
 
-//    private final TypeDefinitionRegistry typeDefinitionRegistry;
+    private String rawString;
+    private Document document;
 
-    public SchemaDefinition(Document document) {
-//        SchemaParser schemaParser = new SchemaParser();
-//        this.typeDefinitionRegistry = schemaParser.buildRegistry(document);
+
+    public SchemaDefinition(String rawString, Document document) {
+        this.rawString = rawString;
         this.document = document;
     }
-
-    private Document document;
 
     public List<NamedNode> getAllNodes(List<SchemaDefinitionElement> schemaDefinitionElements) {
         NodeTraverser nodeTraverser = new NodeTraverser();
@@ -33,7 +32,9 @@ public class SchemaDefinition {
         AllIgnoredCharsVisitor allIgnoredCharsVisitor = new AllIgnoredCharsVisitor();
         nodeTraverser.preOrder(allIgnoredCharsVisitor, document);
         return allIgnoredCharsVisitor.getResult();
-
     }
 
+    public String getRawString() {
+        return rawString;
+    }
 }

@@ -15,11 +15,11 @@ public class Linalyzer {
     }
 
     public List<LinterRuleResult> lint(String document) {
-        return lint(new Parser().parseDocument(document));
+        return lint(document, new Parser().parseDocument(document));
     }
 
-    public List<LinterRuleResult> lint(Document document) {
-        SchemaDefinition schemaDefinition = new SchemaDefinition(document);
+    public List<LinterRuleResult> lint(String raw, Document document) {
+        SchemaDefinition schemaDefinition = new SchemaDefinition(raw, document);
         return rules.stream().flatMap(linterRule -> linterRule.check(schemaDefinition).stream()).collect(Collectors.toList());
     }
 }

@@ -18,7 +18,7 @@ class NoTabsAllowedRuleTest extends Specification {
             }
         """
         def document = new Parser().parseDocument(sdl)
-        SchemaDefinition schemaDefinition = new SchemaDefinition(document)
+        SchemaDefinition schemaDefinition = new SchemaDefinition(sdl, document)
         NoTabsAllowedRule rule = new NoTabsAllowedRule("ruleId", Severity.ERROR)
         when:
         def result = rule.check(schemaDefinition)

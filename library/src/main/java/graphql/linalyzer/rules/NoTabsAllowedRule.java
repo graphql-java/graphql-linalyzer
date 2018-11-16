@@ -39,6 +39,7 @@ public class NoTabsAllowedRule implements LinterRule {
     }
 
     private LinterRuleResult createRuleResult(IgnoredChar ignoredChar, Node node) {
-        return new LinterRuleResult(severity, ruleId, node.getSourceLocation(), "No tab allowed");
+        return new LinterRuleResult(severity, ruleId, node.getSourceLocation(), "No" +
+                " tab allowed");
     }
 }

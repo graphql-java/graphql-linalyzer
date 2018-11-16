@@ -51,9 +51,10 @@ public class Execution {
     }
 
     private SchemaDefinition toSchemaDefinition(String schemaFilePath) {
-        Document document = new Parser().parseDocument(FileUtils.getFileContent(schemaFilePath));
+        String fileContent = FileUtils.getFileContent(schemaFilePath);
+        Document document = new Parser().parseDocument(fileContent);
 
-        return new SchemaDefinition(document);
+        return new SchemaDefinition(fileContent, document);
     }
 
 }

@@ -1,33 +1,31 @@
 package graphql.linalyzer.rules
 
-
 import graphql.language.SourceLocation
 import graphql.linalyzer.LinterRuleResult
 import graphql.linalyzer.SchemaDefinition
-import graphql.linalyzer.SchemaDefinitionElement
 import graphql.linalyzer.Severity
 import graphql.parser.Parser
 import spock.lang.Specification
 
-class NamingRuleTest extends Specification {
+class MaxLineLengthRuleTest extends Specification {
 
 
-    def "checks for camel case fields"() {
+    def "max line length"() {
         given:
         def sdl = """
             type Query {
-                Field: String
+                Field: String # to long
             }
         """
         def document = new Parser().parseDocument(sdl)
         SchemaDefinition schemaDefinition = new SchemaDefinition(sdl, document)
-        NamingRule namingRuleTest = new NamingRule("ruleId", [SchemaDefinitionElement.FIELD], NamingRule.CAMEL_CASE, Severity.ERROR)
+        MaxLineLengthRule rule = new MaxLineLengthRule("ruleId", Severity.ERROR, 30)
         when:
-        def result = namingRuleTest.check(schemaDefinition)
+        def result = rule.check(schemaDefinition)
 
         then:
         result.size() == 1
-        result[0] == new LinterRuleResult(Severity.ERROR, "ruleId", new SourceLocation(3, 17), "Not allowed name Field")
+        result[0] == new LinterRuleResult(Severity.ERROR, "ruleId", new SourceLocation(3, 1), "Line 3 to long.")
 
     }
 
