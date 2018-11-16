@@ -64,7 +64,6 @@ public class ExecutionTest {
                 .check(output);
     }
 
-    @Ignore
     @Test
     public void testNoTabsErrorAndCamelCaseWarning() {
         final String config = "" +
@@ -91,9 +90,9 @@ public class ExecutionTest {
                 .expect(
                         fileLine(schemaFilePath),
                         ruleLine("2:3", "warning", "Not allowed name Name", "camelCase"),
-                        ruleLine("3:3", "error", "No tab allowed", "noTabs"),
-                        ruleLine("3:3", "warning", "Not allowed name Id", "camelCase"),
-                        summaryLine(1, 1)
+                        ruleLine("3:1", "error", "No tab allowed", "noTabs"),
+                        ruleLine("3:2", "warning", "Not allowed name Id", "camelCase"),
+                        summaryLine(1, 2)
                 )
                 .check(output);
     }
