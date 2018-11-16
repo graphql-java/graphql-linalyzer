@@ -1,6 +1,7 @@
 package graphql.linalyzer.cli;
 
 import graphql.linalyzer.cli.test.utils.OutputChecker;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static graphql.linalyzer.cli.test.utils.OutputChecker.fileLine;
@@ -63,6 +64,7 @@ public class ExecutionTest {
                 .check(output);
     }
 
+    @Ignore
     @Test
     public void testNoTabsErrorAndCamelCaseWarning() {
         final String config = "" +
