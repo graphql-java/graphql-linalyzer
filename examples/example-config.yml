@@ -1,3 +1,5 @@
 rules:
   - name: camelCase
     severity: warning
+  - name: noTabs
+    severity: error

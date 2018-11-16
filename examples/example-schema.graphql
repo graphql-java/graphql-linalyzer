@@ -1,5 +1,5 @@
 type Query {
     Name: String
     Id: String
-    Age: String
+	Age: String
 }

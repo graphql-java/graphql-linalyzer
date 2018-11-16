@@ -20,20 +20,11 @@ public final class ConfigTransformer {
                 .map(ruleConfiguration -> {
                     final String ruleName = ruleConfiguration.getName();
 
-                    LinterRule linterRule = null;
-
-                    if (ruleName.equals("camelCase")) {
-                        linterRule = new NamingRule(
-                                "ruleId",
-                                singletonList(SchemaDefinitionElement.FIELD),
-                                NamingRule.CAMEL_CASE, ruleConfiguration.getSeverity()
-                        );
-                    }
+                    LinterRule linterRule = RuleMappers.getRule(ruleConfiguration);
 
                     return new AbstractMap.SimpleEntry<>(ruleName, linterRule);
 
                 })
-                .filter(entry -> entry.getValue() != null)
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }

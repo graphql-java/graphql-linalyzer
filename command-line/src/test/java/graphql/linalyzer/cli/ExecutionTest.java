@@ -64,6 +64,39 @@ public class ExecutionTest {
     }
 
     @Test
+    public void testNoTabsErrorAndCamelCaseWarning() {
+        final String config = "" +
+                "rules:\n" +
+                "  - name: camelCase\n" +
+                "    severity: warning\n" +
+                "  - name: noTabs\n" +
+                "    severity: error\n";
+
+        final String schema = "" +
+                "type Query {\n" +
+                "  Name: String\n" +
+                "\tId: String\n" +
+                "}";
+
+        final String configFilePath = createTempFile(config);
+        final String schemaFilePath = createTempFile(schema);
+
+        final String output = new Execution().execute(configFilePath, singletonList(schemaFilePath));
+
+        System.out.println(output);
+
+        new OutputChecker()
+                .expect(
+                        fileLine(schemaFilePath),
+                        ruleLine("2:3", "warning", "Not allowed name Name", "camelCase"),
+                        ruleLine("3:3", "error", "No tab allowed", "noTabs"),
+                        ruleLine("3:3", "warning", "Not allowed name Id", "camelCase"),
+                        summaryLine(1, 1)
+                )
+                .check(output);
+    }
+
+    @Test
     public void testMultilineOutput() {
         final String config = "" +
                 "rules:\n" +
