@@ -1,4 +1,4 @@
-FROM oracle/graalvm-ce:1.0.0-rc9
+FROM oracle/graalvm-ce:1.0.0-rc9 AS builder
 
 RUN yum install git -y
 
@@ -18,4 +18,7 @@ COPY command-line/src command-line/src
 
 RUN /build-cli.sh
 
+
+FROM alpine:3.8
+COPY --from=builder /linalyzer /linalyzer
 ENTRYPOINT ["/linalyzer"]
