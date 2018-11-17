@@ -1,16 +1,19 @@
 package graphql.linalyzer.cli;
 
+import graphql.linalyzer.cli.test.utils.DockerUtils;
 import graphql.linalyzer.cli.test.utils.OutputChecker;
 import graphql.linalyzer.cli.test.utils.OutputChecker.Line;
-import graphql.linalyzer.cli.test.utils.yaml.TestConfig;
 import graphql.linalyzer.cli.test.utils.TestFileUtils;
+import graphql.linalyzer.cli.test.utils.yaml.TestConfig;
 import graphql.linalyzer.cli.test.utils.yaml.TestRuleOutput;
 import graphql.linalyzer.cli.test.utils.yaml.TestSchema;
-import org.junit.rules.MethodRule;
-import org.junit.runners.model.FrameworkMethod;
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -18,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static graphql.linalyzer.cli.test.utils.DockerUtils.CONTAINER_DIR;
 import static graphql.linalyzer.cli.test.utils.OutputChecker.fileLine;
 import static graphql.linalyzer.cli.test.utils.OutputChecker.ruleLine;
 import static graphql.linalyzer.cli.test.utils.OutputChecker.summaryLine;
@@ -26,19 +30,21 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
-public class YamlExecuteRule implements MethodRule {
+public class YamlExecuteRule implements TestRule {
+
+    private final String imageId;
+
+    public YamlExecuteRule(String imageId) {
+        this.imageId = imageId;
+    }
 
     @Override
-    public Statement apply(
-            Statement base, FrameworkMethod method, Object target
-    ) {
-
-        final String testFilePath = method.getName() + ".yml";
+    public Statement apply(Statement base, Description description) {
+        final String testFilePath = description.getMethodName() + ".yml";
 
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-
                 execute(testFilePath);
 
                 base.evaluate();
@@ -46,29 +52,32 @@ public class YamlExecuteRule implements MethodRule {
         };
     }
 
+
     private void execute(String testFilePath) {
         final InputStream stream = YamlExecuteRule.class.getResourceAsStream(testFilePath);
 
-        final TestConfig testConfig = new org.yaml.snakeyaml.Yaml(new Constructor(TestConfig.class)).load(stream);
+        final TestConfig testConfig = new Yaml(new Constructor(TestConfig.class)).load(stream);
 
-        final String configFilePath = createTempFile(testConfig.getConfig());
+        final File tempDirectory = DockerUtils.createTempDirForVolume();
 
-        final Map<String, TestSchema> schemasWithPaths = testConfig.getSchemas().stream()
+        final File configFile = createTempFile(testConfig.getConfig(), tempDirectory);
+
+        final Map<File, TestSchema> schemasWithPaths = testConfig.getSchemas().stream()
                 .map(testSchema -> new AbstractMap.SimpleEntry<>(
-                        TestFileUtils.createTempFile(testSchema.getContent()),
+                        TestFileUtils.createTempFile(testSchema.getContent(), tempDirectory),
                         testSchema
                 ))
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        final String output = new Execution().execute(configFilePath, new ArrayList<>(schemasWithPaths.keySet()));
+        final String output = DockerUtils.executeLinalyzer(imageId, tempDirectory, configFile, schemasWithPaths.keySet());
 
         final List<Line> lines = schemasWithPaths.entrySet().stream()
                 .filter(entry -> entry.getValue().getOutputs() != null)
                 .reduce(new ArrayList<>(), (partialLines, entry) -> {
-                    final String schemaPath = entry.getKey();
+                    final File schemaFile = entry.getKey();
                     final TestSchema testSchema = entry.getValue();
 
-                    partialLines.add(fileLine(schemaPath));
+                    partialLines.add(fileLine(CONTAINER_DIR + "/" + schemaFile.getName()));
 
                     partialLines.addAll(getRuleLines(testSchema));
 
@@ -109,5 +118,4 @@ public class YamlExecuteRule implements MethodRule {
                 )
                 .collect(toList());
     }
-
 }

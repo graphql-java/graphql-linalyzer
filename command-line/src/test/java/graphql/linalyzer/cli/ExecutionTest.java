@@ -23,8 +23,8 @@ public class ExecutionTest {
                 "  Name: String\n" +
                 "}";
 
-        final String configFilePath = createTempFile(config);
-        final String schemaFilePath = createTempFile(schema);
+        final String configFilePath = createTempFile(config).getAbsolutePath();
+        final String schemaFilePath = createTempFile(schema).getAbsolutePath();
 
         final String output = new Execution().execute(configFilePath, singletonList(schemaFilePath));
 
@@ -49,8 +49,8 @@ public class ExecutionTest {
                 "  Name: String\n" +
                 "}";
 
-        final String configFilePath = createTempFile(config);
-        final String schemaFilePath = createTempFile(schema);
+        final String configFilePath = createTempFile(config).getAbsolutePath();
+        final String schemaFilePath = createTempFile(schema).getAbsolutePath();
 
         final String output = new Execution().execute(configFilePath, singletonList(schemaFilePath));
 
@@ -78,8 +78,8 @@ public class ExecutionTest {
                 "\tId: String\n" +
                 "}";
 
-        final String configFilePath = createTempFile(config);
-        final String schemaFilePath = createTempFile(schema);
+        final String configFilePath = createTempFile(config).getAbsolutePath();
+        final String schemaFilePath = createTempFile(schema).getAbsolutePath();
 
         final String output = new Execution().execute(configFilePath, singletonList(schemaFilePath));
 
@@ -110,8 +110,8 @@ public class ExecutionTest {
                 "  Age: String\n" +
                 "}";
 
-        final String configFilePath = createTempFile(config);
-        final String schemaFilePath = createTempFile(schema);
+        final String configFilePath = createTempFile(config).getAbsolutePath();
+        final String schemaFilePath = createTempFile(schema).getAbsolutePath();
 
         final String output = new Execution().execute(configFilePath, singletonList(schemaFilePath));
 
@@ -138,8 +138,8 @@ public class ExecutionTest {
                 "  name: String\n" +
                 "}";
 
-        final String configFilePath = createTempFile(config);
-        final String schemaFilePath = createTempFile(schema);
+        final String configFilePath = createTempFile(config).getAbsolutePath();
+        final String schemaFilePath = createTempFile(schema).getAbsolutePath();
 
         final String output = new Execution().execute(configFilePath, singletonList(schemaFilePath));
 

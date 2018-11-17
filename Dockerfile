@@ -10,11 +10,11 @@ COPY build-cli.sh build-cli.sh
 
 COPY library/settings.gradle library/settings.gradle
 COPY library/build.gradle library/build.gradle
-COPY library/src library/src
+COPY library/src/main library/src/main
 
 COPY command-line/settings.gradle command-line/settings.gradle
 COPY command-line/build.gradle command-line/build.gradle
-COPY command-line/src command-line/src
+COPY command-line/src/main command-line/src/main
 
 RUN /build-cli.sh
 

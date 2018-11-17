@@ -1,0 +1,32 @@
+config: |
+  rules:
+    - name: noTabs
+      severity: warning
+schemas:
+  -
+    content: |
+      type Query {
+        	Name: String
+      }
+    outputs:
+      - severity: warning
+        location: 2:3
+        message: No tab allowed
+        ruleName: noTabs
+  -
+    content: |
+      type Query {
+        name: String
+        	ID: String
+      }
+    outputs:
+      - severity: warning
+        location: 3:3
+        message: No tab allowed
+        ruleName: noTabs
+  -
+    content: |
+      type Query {
+        name: String
+        id: String
+      }
