@@ -60,6 +60,10 @@ public class Print {
     }
 
     private static String printFileResult(FileResult fileResult) {
+        if(fileResult.getRuleResults().isEmpty()) {
+            return "";
+        }
+
         final String filePath = fileResult.getFilePath();
 
         final String printedRuleResults = fileResult.getRuleResults().stream()

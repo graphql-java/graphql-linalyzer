@@ -1,7 +1,6 @@
 package graphql.linalyzer.cli;
 
 import graphql.linalyzer.cli.test.utils.OutputChecker;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static graphql.linalyzer.cli.test.utils.OutputChecker.fileLine;
@@ -24,8 +23,8 @@ public class ExecutionTest {
                 "  Name: String\n" +
                 "}";
 
-        final String configFilePath = createTempFile(config);
-        final String schemaFilePath = createTempFile(schema);
+        final String configFilePath = createTempFile(config).getAbsolutePath();
+        final String schemaFilePath = createTempFile(schema).getAbsolutePath();
 
         final String output = new Execution().execute(configFilePath, singletonList(schemaFilePath));
 
@@ -50,8 +49,8 @@ public class ExecutionTest {
                 "  Name: String\n" +
                 "}";
 
-        final String configFilePath = createTempFile(config);
-        final String schemaFilePath = createTempFile(schema);
+        final String configFilePath = createTempFile(config).getAbsolutePath();
+        final String schemaFilePath = createTempFile(schema).getAbsolutePath();
 
         final String output = new Execution().execute(configFilePath, singletonList(schemaFilePath));
 
@@ -79,8 +78,8 @@ public class ExecutionTest {
                 "\tId: String\n" +
                 "}";
 
-        final String configFilePath = createTempFile(config);
-        final String schemaFilePath = createTempFile(schema);
+        final String configFilePath = createTempFile(config).getAbsolutePath();
+        final String schemaFilePath = createTempFile(schema).getAbsolutePath();
 
         final String output = new Execution().execute(configFilePath, singletonList(schemaFilePath));
 
@@ -111,8 +110,8 @@ public class ExecutionTest {
                 "  Age: String\n" +
                 "}";
 
-        final String configFilePath = createTempFile(config);
-        final String schemaFilePath = createTempFile(schema);
+        final String configFilePath = createTempFile(config).getAbsolutePath();
+        final String schemaFilePath = createTempFile(schema).getAbsolutePath();
 
         final String output = new Execution().execute(configFilePath, singletonList(schemaFilePath));
 
@@ -124,6 +123,28 @@ public class ExecutionTest {
                         ruleLine("4:3", "warning", "Not allowed name Age", "camelCase"),
                         summaryLine(0, 3)
                 )
+                .check(output);
+    }
+
+    @Test
+    public void testOutputForValidFile() {
+        final String config = "" +
+                "rules:\n" +
+                "  - name: camelCase\n" +
+                "    severity: warning\n";
+
+        final String schema = "" +
+                "type Query {\n" +
+                "  name: String\n" +
+                "}";
+
+        final String configFilePath = createTempFile(config).getAbsolutePath();
+        final String schemaFilePath = createTempFile(schema).getAbsolutePath();
+
+        final String output = new Execution().execute(configFilePath, singletonList(schemaFilePath));
+
+        new OutputChecker()
+                .expect(summaryLine(0, 0))
                 .check(output);
     }
 }

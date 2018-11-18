@@ -40,6 +40,12 @@ public class OutputChecker {
         return this;
     }
 
+    public OutputChecker expect(List<Line> lines) {
+        expectedOutputLines.addAll(lines);
+
+        return this;
+    }
+
     private String ruleLineWithStyle(String location, String severity, String message, String ruleName) {
         final String severityStyled = STYLE_SEVERITY.get(severity).apply(severity);
 
@@ -82,10 +88,13 @@ public class OutputChecker {
 
         if (actualOutputLines.size() != expectedOutputLines.size()) {
             fail(String.format(
-                    "Expected output lines should have the same number of lines than the actual output. " +
-                            "Expected is %s, actual is %s",
+                    "Expected output non-empty lines should have the same number of lines than the actual output. " +
+                            "Expected is %s, actual is %s.\n" +
+                            "Actual output: \n%s\n",
                     expectedOutputLines.size(),
-                    actualOutputLines.size()));
+                    actualOutputLines.size(),
+                    actualOutput
+            ));
         }
 
         for (int i = 0; i < actualOutputLines.size(); i++) {
@@ -147,7 +156,7 @@ public class OutputChecker {
         }
     }
 
-    private static class RuleLine implements Line {
+    public static class RuleLine implements Line {
         final String location;
         final String severity;
         final String message;
@@ -166,7 +175,7 @@ public class OutputChecker {
         final int warnings;
         final int errors;
 
-        public SummaryLine(int errors, int warnings) {
+        SummaryLine(int errors, int warnings) {
             this.problems = warnings + errors;
             this.warnings = warnings;
             this.errors = errors;
