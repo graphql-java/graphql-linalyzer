@@ -17,6 +17,8 @@ class NamingRuleTest extends Specification {
         def sdl = """
             type Query {
                 Field: String
+                id: ID
+                allowed: String
             }
         """
         def document = new Parser().parseDocument(sdl)
