@@ -9,5 +9,5 @@ schemas:
       - severity: error
         location: 1:12
         message: Not allowed linebreak at 1. Expected WINDOWS style.
-        ruleName: consistendLinebreak
+        ruleName: consistentLinebreak
 
