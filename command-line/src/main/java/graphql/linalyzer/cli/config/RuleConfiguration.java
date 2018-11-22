@@ -2,12 +2,12 @@ package graphql.linalyzer.cli.config;
 
 import graphql.linalyzer.Severity;
 
-import java.util.List;
+import java.util.Map;
 
 public class RuleConfiguration {
     private String name;
     private Severity severity;
-    private List<String> arguments;
+    private Map<String, String> arguments;
 
     public String getName() {
         return name;
@@ -25,11 +25,11 @@ public class RuleConfiguration {
         this.severity = severity;
     }
 
-    public List<String> getArguments() {
+    public Map<String, String> getArguments() {
         return arguments;
     }
 
-    public void setArguments(List<String> arguments) {
+    public void setArguments(Map<String, String> arguments) {
         this.arguments = arguments;
     }
 

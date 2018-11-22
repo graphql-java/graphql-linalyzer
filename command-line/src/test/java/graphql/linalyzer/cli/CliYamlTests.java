@@ -19,4 +19,8 @@ public class CliYamlTests {
     @Test
     public void testNoTabs() {
     }
+
+    @Test
+    public void testConsistentLinebreak() {
+    }
 }

@@ -22,7 +22,7 @@ public final class ConfigParser {
                     RuleConfiguration ruleConfiguration = new RuleConfiguration();
                     ruleConfiguration.setName(r.get("name"));
                     ruleConfiguration.setSeverity(Severity.valueOf(r.get("severity").toUpperCase()));
-
+                    ruleConfiguration.setArguments(r);
                     return ruleConfiguration;
                 }).collect(toList());
     }

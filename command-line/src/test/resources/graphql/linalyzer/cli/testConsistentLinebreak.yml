@@ -1,0 +1,13 @@
+config: |
+  rules:
+    - name: consistentLinebreak
+      severity: error
+      style: windows
+schemas:
+  - content: "type Query \n {id:String}\r\n"
+    outputs:
+      - severity: error
+        location: 1:12
+        message: Not allowed linebreak at 1. Expected WINDOWS style.
+        ruleName: consistendLinebreak
+

@@ -2,6 +2,8 @@ package graphql.linalyzer.cli.config;
 
 import graphql.linalyzer.LinterRule;
 import graphql.linalyzer.SchemaDefinitionElement;
+import graphql.linalyzer.rules.AllDefinitionsUsedRule;
+import graphql.linalyzer.rules.ConsistentLinebreakRule;
 import graphql.linalyzer.rules.NamingRule;
 import graphql.linalyzer.rules.NoTabsAllowedRule;
 
@@ -27,6 +29,38 @@ final class RuleMappers {
                 "noTabsRuleID",
                 ruleConfiguration.getSeverity()
         ));
+        ruleCreatorsMap.put("allDefinitionsUsed", ruleConfiguration -> new AllDefinitionsUsedRule(
+                "allDefinitionsUsedID",
+                ruleConfiguration.getSeverity()
+        ));
+
+        ruleCreatorsMap.put("consistentLinebreak", RuleMappers::newLinebreakRule);
+    }
+
+    private static ConsistentLinebreakRule newLinebreakRule(RuleConfiguration ruleConfiguration) {
+        String styleValue = ruleConfiguration.getArguments().get("style");
+        if (styleValue == null) {
+            throw new InvalidConfigException("missing 'style' property for consistentLinebreak rule");
+        }
+        String style = styleValue.toLowerCase();
+
+        ConsistentLinebreakRule.LinebreakType type;
+        switch (style) {
+            case "windows":
+                type = ConsistentLinebreakRule.LinebreakType.WINDOWS;
+                break;
+            case "linux":
+                type = ConsistentLinebreakRule.LinebreakType.LINUX;
+                break;
+            default:
+                throw new InvalidConfigException("invalid 'style' property for consistentLinebreak rule");
+
+        }
+        return new ConsistentLinebreakRule(
+                "allDefinitionsUsedID",
+                ruleConfiguration.getSeverity(),
+                type
+        );
     }
 
     static LinterRule getRule(RuleConfiguration ruleConfiguration) {
