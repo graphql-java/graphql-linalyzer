@@ -1,16 +1,26 @@
 # GraphQL Linalyzer
 
-## Building a Docker Image with the linalyzer Executable
+GraphQL schema **li**nter and a**nalyzer** (linalyzer)
 
-```
-docker build -t linalyzer .
+## Config file example
+
+```yaml
+rules:
+  - name: camelCase
+    severity: warning
+  - name: noTabs
+    severity: error
 ```
 
-## Executing linalyzer Inside a Docker Container
+## Run it via docker
 
+The latest build is available on docker hub via `andimarek/graphql-linalyzer`
+
+```sh
+docker run \
+-v $(pwd)/<your-config.yml>:/linalyzer-config.yml \
+-v $(pwd)/<your-schema-to-check>:/schema.graphql \
+andimarek/graphql-linalyzer schema.graphql
 ```
-docker run --rm \
-    --mount type=bind,source="$(pwd)/examples",target=/files \
-    linalyzer \
-    -c /files/example-config.yml /files/example-schema.graphql
-```
+
+
